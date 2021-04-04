@@ -1,5 +1,5 @@
-import React, {useCallback, useEffect} from 'react';
-import {StatusBar, SafeAreaView, StyleSheet, Text} from 'react-native';
+import React, {useEffect} from 'react';
+import {StatusBar, SafeAreaView, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Main from './page/Main';
@@ -8,26 +8,29 @@ import Setting from './page/Setting';
 import HeaderRight from './components/HeaderRight';
 import {getStorage} from './util/stroage';
 import {useDispatch, useSelector} from 'react-redux';
-import {saveUser} from './modules/user';
+import {saveUser, resetUser} from './modules/user';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   const dispatch = useDispatch();
-  const {userData} = useSelector(state => state.user);
+  const {isLogin} = useSelector(state => state.user);
 
   // 유저 데이터 불러오기
   useEffect(() => {
-    const get = async () => dispatch(saveUser(await getStorage('couple')));
+    const get = async () =>
+      (await getStorage)
+        ? dispatch(saveUser(await getStorage('couple')))
+        : dispatch(resetUser());
     get();
-  }, []);
+  }, [dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <NavigationContainer>
         <Stack.Navigator>
-          {userData ? (
+          {isLogin ? (
             <>
               <Stack.Screen
                 name="Home"

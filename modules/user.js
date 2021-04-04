@@ -16,9 +16,13 @@ const user = createSlice({
       state.userData = payload;
       state.isLogin = true;
     },
+    resetUser: state => {
+      state.isLogin = false;
+      state.userData = null;
+    },
   },
 });
 
-export const {getUser, saveUser} = user.actions;
+export const {getUser, saveUser, resetUser} = user.actions;
 
 export default user.reducer;

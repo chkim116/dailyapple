@@ -30,10 +30,7 @@ const Main = () => {
   }, []);
 
   const handleDateChange = useCallback(date => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    const day = date.getDate();
-    setCoupleData(prev => ({...prev, date: `${year}년 ${month}월 ${day}일`}));
+    setCoupleData(prev => ({...prev, date}));
   }, []);
 
   const handleNextStatePicker = useCallback(() => {
@@ -49,21 +46,26 @@ const Main = () => {
   }, []);
 
   const handleFinish = useCallback(() => {
+    const year = coupleData.date.getFullYear();
+    const month = coupleData.date.getMonth() + 1;
+    const day = coupleData.date.getDate();
+    const data = `${year}년 ${month}월 ${day}일`;
+
     Alert.alert(
       '완료 확인',
-      `${coupleData.me}😍${coupleData.you} ${coupleData.date} 맞으신가요?`,
+      `${coupleData.me}😍${coupleData.you} ${data} 맞으신가요?`,
       [
         {text: '예', onPress: handleConfirm},
         {text: '아니요', style: 'cancel'},
       ],
     );
-  }, [coupleData]);
+  }, [coupleData, handleConfirm]);
 
   useEffect(() => {
     if (!isFinish) return;
     saveStorage('couple', coupleData);
     dispatch(saveUser(coupleData));
-  }, [isFinish]);
+  }, [isFinish, dispatch, coupleData]);
 
   return (
     <ScrollView contentContainerStyle={styles.scrollView}>

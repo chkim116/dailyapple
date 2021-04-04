@@ -3,7 +3,7 @@ import {View, Text, StyleSheet} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import {useDispatch} from 'react-redux';
 import Button from '../components/Button';
-import {saveUser} from '../modules/user';
+import {resetUser} from '../modules/user';
 import {removeStorage} from '../util/stroage';
 
 const Setting = () => {
@@ -15,7 +15,7 @@ const Setting = () => {
 
   const handleRemoveUser = useCallback(() => {
     removeStorage('couple');
-    dispatch(saveUser(null));
+    dispatch(resetUser());
   }, [dispatch]);
 
   return (
