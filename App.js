@@ -1,40 +1,35 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {StatusBar, SafeAreaView, StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import Main from './page/Main';
-import Home from './page/Home';
+import {useAuth} from './util/stroage';
 import Setting from './page/Setting';
+import Home from './page/Home';
 import HeaderRight from './components/HeaderRight';
-import {getStorage} from './util/stroage';
 import {useDispatch, useSelector} from 'react-redux';
-import {saveUser, resetUser} from './modules/user';
+import {saveUser} from './modules/user';
 
 const Stack = createStackNavigator();
 
 const App = () => {
-  const dispatch = useDispatch();
   const {isLogin} = useSelector(state => state.user);
-
-  // 유저 데이터 불러오기
-  useEffect(() => {
-    const get = async () =>
-      (await getStorage)
-        ? dispatch(saveUser(await getStorage('couple')))
-        : dispatch(resetUser());
-    get();
-  }, [dispatch]);
+  const user = useAuth();
+  const dispatch = useDispatch();
+  if (user) dispatch(saveUser(user));
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" />
       <NavigationContainer>
         <Stack.Navigator>
-          {isLogin ? (
+          {!isLogin ? (
+            <Stack.Screen component={Main} name="Daily Apple" />
+          ) : (
             <>
               <Stack.Screen
-                name="Home"
                 component={Home}
+                name="Day f"
                 options={{
                   title: 'Daily Apple',
                   headerTitleStyle: {
@@ -46,10 +41,8 @@ const App = () => {
                   },
                 }}
               />
-              <Stack.Screen name="Setting" component={Setting} />
+              <Stack.Screen component={Setting} name="Setting" />
             </>
-          ) : (
-            <Stack.Screen name="Daily Apple" component={Main} />
           )}
         </Stack.Navigator>
       </NavigationContainer>
