@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, ImageBackground, StyleSheet, FlatList} from 'react-native';
 import {useSelector} from 'react-redux';
 
@@ -6,7 +6,7 @@ import {useSelector} from 'react-redux';
 const newAniversary = () => {
   let i = 0;
   let res = [];
-  while (i < 7000) {
+  while (i < 5000) {
     i += 5;
     if (i % 100 === 0) {
       res.push(i);
@@ -30,7 +30,7 @@ const dateFormat = date => {
 
 //  기념일대로 싸라라~~
 const renderAniversaryDay = ({item}) => (
-  <View style={styles.dayContainer}>
+  <View style={item.behind ? styles.behindContainer : styles.dayContainer}>
     <Text style={styles.dayTitle}>
       {item.title % 365 === 0 ? `${item.title / 365}주년` : `${item.title}일`}
     </Text>
@@ -40,8 +40,8 @@ const renderAniversaryDay = ({item}) => (
 
 const AniversaryList = () => {
   const userData = useSelector(state => state.user.userData);
+  const list = useRef();
   const [data, setData] = useState();
-
   const [bannerImg] = useState(
     'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
   );
@@ -76,6 +76,7 @@ const AniversaryList = () => {
                 )
             : calcDay(number - 1),
         ),
+        behind: calcDay(number) < new Date() ? true : false,
       })),
     );
   }, []);
@@ -109,6 +110,8 @@ const AniversaryList = () => {
       <View>
         {data && (
           <FlatList
+            initialScrollIndex={Math.ceil(diffDay / 100)}
+            ref={list}
             onScroll={handleTouchScrollLIst}
             data={data}
             ListHeaderComponent={
@@ -157,6 +160,12 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#dbdbdb',
+  },
+  behindContainer: {
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#dbdbdb',
+    opacity: 0.3,
   },
   dayTitle: {
     fontSize: 20,

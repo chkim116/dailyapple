@@ -29,7 +29,7 @@ const App = () => {
             <>
               <Stack.Screen
                 component={Home}
-                name="Day f"
+                name="Home"
                 options={{
                   title: 'Daily Apple',
                   headerTitleStyle: {

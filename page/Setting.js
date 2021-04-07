@@ -1,4 +1,3 @@
-import {useNavigation} from '@react-navigation/core';
 import React, {useCallback} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
@@ -6,11 +5,12 @@ import {useDispatch} from 'react-redux';
 import Button from '../components/Button';
 import {resetUser} from '../modules/user';
 import {removeStorage} from '../util/stroage';
+import CheckBox from '@react-native-community/checkbox';
 
 const Setting = () => {
   const data = [
-    {id: '1', desc: '0일부터 시작'},
-    {id: '2', desc: '위젯 내보내기'},
+    {id: '1', desc: '기념일 알람'},
+    {id: '2', desc: '데이 리스트 알람'},
   ];
   const dispatch = useDispatch();
 
@@ -25,10 +25,16 @@ const Setting = () => {
         style={styles.flatList}
         data={data}
         renderItem={({item}) => (
-          <Text style={styles.flatListData}>{item.desc}</Text>
+          <View style={styles.checkboxContainer}>
+            <Text style={styles.flatListData}>{item.desc}</Text>
+            <CheckBox
+              style={styles.checkbox}
+              boxType="square"
+              disabled={false}
+            />
+          </View>
         )}
       />
-
       <View style={styles.buttonContainer}>
         <Text>다시 정보를 입력하고 싶으신가요?</Text>
         <Button styles={styles.removeButton} onPress={handleRemoveUser}>
@@ -40,6 +46,19 @@ const Setting = () => {
 };
 
 const styles = StyleSheet.create({
+  checkboxContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: 50,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    marginLeft: 12,
+    marginBottom: 12,
+  },
   flatList: {
     padding: 15,
   },
