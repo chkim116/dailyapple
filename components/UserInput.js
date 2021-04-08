@@ -7,10 +7,8 @@ import Button from '../components/Button';
 import DatePicker from 'react-native-date-picker';
 import {useDispatch} from 'react-redux';
 import {saveUser} from '../modules/user';
-import {useNavigation} from '@react-navigation/core';
 
 const UserInput = () => {
-  const navigation = useNavigation();
   const [isPicker, setIsPicker] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
   const [coupleData, setCoupleData] = useState({me: '', you: '', date: ''});
