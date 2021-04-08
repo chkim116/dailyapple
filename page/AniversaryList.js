@@ -1,8 +1,6 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {View, Text, ImageBackground, StyleSheet, FlatList} from 'react-native';
+import React, {useEffect, useRef, useState} from 'react';
+import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {useSelector} from 'react-redux';
-import * as ImagePicker from 'react-native-image-picker';
-import {saveStorage, useGetStorage} from '../util/stroage';
 
 // 100, 365일 단위로 배열에 넣기
 const newAniversary = () => {
@@ -22,7 +20,7 @@ const newAniversary = () => {
 };
 
 //  데이터를 년-월-일로 포매팅
-const dateFormat = date => {
+export const dateFormat = date => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
@@ -45,12 +43,6 @@ const AniversaryList = () => {
   const list = useRef();
   const [data, setData] = useState();
 
-  const img = useGetStorage('img');
-  const [bannerImg, setBannerImg] = useState(
-    img ??
-      'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
-  );
-  const [scrollList, setScrollList] = useState(false);
   const meetTime = new Date(userData.date);
   // ex 20.04.04 - 21.04.04
 
@@ -64,32 +56,6 @@ const AniversaryList = () => {
 
   const diffDay = Math.floor((today - firstTime) / oneDay);
   const calcDay = days => new Date(firstTime + days * oneDay);
-
-  const handleLoadImg = useCallback(() => {
-    const options = {
-      mediaType: 'photo',
-      includeBase64: false,
-      maxHeight: 200,
-      width: '100%',
-    };
-    ImagePicker.launchImageLibrary(options, res => {
-      if (res.error) {
-        console.log('LaunchImageLibrary Error: ', res.error);
-      } else {
-        setBannerImg(() => res.uri);
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    if (img) {
-      setBannerImg(() => img);
-    }
-  }, [img]);
-
-  useEffect(() => {
-    saveStorage('img', bannerImg);
-  }, [bannerImg]);
 
   useEffect(() => {
     setData(() =>
@@ -112,70 +78,32 @@ const AniversaryList = () => {
     );
   }, []);
 
-  const handleTouchScrollLIst = useCallback(e => {
-    const y = e.nativeEvent.contentOffset.y;
-    if (y > 100 * Math.ceil(diffDay / 100)) setScrollList(true);
-    else setScrollList(false);
-  }, []);
-
   return (
     <View>
-      <ImageBackground
-        style={styles.bannerImg}
-        imageStyle={styles.bannerImg}
-        source={{
-          url: bannerImg,
-        }}>
-        <View
-          style={scrollList ? styles.textContainerScroll : styles.textContainer}
-          onTouchEnd={handleLoadImg}>
-          <Text style={styles.text}>
-            {userData.me}♥{userData.you}
-          </Text>
-          <Text style={styles.text}>
-            우리 오늘 만난지 {diffDay + 1}일 되는 날♥
-          </Text>
-        </View>
-      </ImageBackground>
-      <View>
-        {data && (
-          <FlatList
-            initialScrollIndex={Math.ceil(diffDay / 100)}
-            getItemLayout={(data, index) => ({
-              length: data.length,
-              offset: 80 * index,
-              index,
-            })}
-            ref={list}
-            onScroll={handleTouchScrollLIst}
-            data={data}
-            ListHeaderComponent={
-              <Text style={styles.textSmall}>
-                {dateFormat(new Date(userData.date))}부터 1일이에오😍
-              </Text>
-            }
-            renderItem={renderAniversaryDay}
-            keyExtractor={item => item.id}
-          />
-        )}
-      </View>
+      {data && (
+        <FlatList
+          initialScrollIndex={Math.ceil(diffDay / 100)}
+          getItemLayout={(data, index) => ({
+            length: data.length,
+            offset: 80 * index,
+            index,
+          })}
+          ref={list}
+          data={data}
+          ListHeaderComponent={
+            <Text style={styles.textSmall}>
+              {dateFormat(new Date(userData.date))}부터 1일이에오😍
+            </Text>
+          }
+          renderItem={renderAniversaryDay}
+          keyExtractor={item => item.id}
+        />
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  textContainer: {
-    fontWeight: 'bold',
-    height: 200,
-    width: '100%',
-    justifyContent: 'center',
-  },
-  textContainerScroll: {
-    fontWeight: 'bold',
-    height: 140,
-    width: '100%',
-    justifyContent: 'center',
-  },
   text: {
     marginTop: 8,
     textAlign: 'center',
