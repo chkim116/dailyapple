@@ -2,8 +2,11 @@
   package="com.dailyapple">
 
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 안드로이드 카메라 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--  -->
 
     <application
       android:name=".MainApplication"

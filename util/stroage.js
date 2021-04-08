@@ -1,7 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useCallback, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {saveUser} from '../modules/user';
 
 export const removeStorage = async key => {
   try {
@@ -26,6 +24,26 @@ export const useAuth = () => {
   }, []);
 
   return user;
+};
+
+export const useGetStorage = key => {
+  const [item, setItem] = useState();
+
+  const getStorage = async itemKey => {
+    try {
+      const res = await AsyncStorage.getItem(itemKey);
+      if (res) setItem(JSON.parse(res));
+      else setItem(null);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  useEffect(() => {
+    getStorage(key);
+  }, []);
+
+  return item;
 };
 
 export const saveStorage = async (key, data) => {

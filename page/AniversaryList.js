@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {View, Text, ImageBackground, StyleSheet, FlatList} from 'react-native';
 import {useSelector} from 'react-redux';
+import * as ImagePicker from 'react-native-image-picker';
+import {saveStorage, useGetStorage} from '../util/stroage';
 
 // 100, 365일 단위로 배열에 넣기
 const newAniversary = () => {
@@ -42,8 +44,11 @@ const AniversaryList = () => {
   const userData = useSelector(state => state.user.userData);
   const list = useRef();
   const [data, setData] = useState();
-  const [bannerImg] = useState(
-    'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
+
+  const img = useGetStorage('img');
+  const [bannerImg, setBannerImg] = useState(
+    img ??
+      'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
   );
   const [scrollList, setScrollList] = useState(false);
   const meetTime = new Date(userData.date);
@@ -59,6 +64,32 @@ const AniversaryList = () => {
 
   const diffDay = Math.floor((today - firstTime) / oneDay);
   const calcDay = days => new Date(firstTime + days * oneDay);
+
+  const handleLoadImg = useCallback(() => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 200,
+      width: '100%',
+    };
+    ImagePicker.launchImageLibrary(options, res => {
+      if (res.error) {
+        console.log('LaunchImageLibrary Error: ', res.error);
+      } else {
+        setBannerImg(() => res.uri);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    if (img) {
+      setBannerImg(() => img);
+    }
+  }, [img]);
+
+  useEffect(() => {
+    saveStorage('img', bannerImg);
+  }, [bannerImg]);
 
   useEffect(() => {
     setData(() =>
@@ -83,8 +114,7 @@ const AniversaryList = () => {
 
   const handleTouchScrollLIst = useCallback(e => {
     const y = e.nativeEvent.contentOffset.y;
-
-    if (y > 0) setScrollList(true);
+    if (y > 100 * Math.ceil(diffDay / 100)) setScrollList(true);
     else setScrollList(false);
   }, []);
 
@@ -98,7 +128,7 @@ const AniversaryList = () => {
         }}>
         <View
           style={scrollList ? styles.textContainerScroll : styles.textContainer}
-          onTouchEnd={e => console.log('이미지 불러와보쟈')}>
+          onTouchEnd={handleLoadImg}>
           <Text style={styles.text}>
             {userData.me}♥{userData.you}
           </Text>
@@ -111,6 +141,11 @@ const AniversaryList = () => {
         {data && (
           <FlatList
             initialScrollIndex={Math.ceil(diffDay / 100)}
+            getItemLayout={(data, index) => ({
+              length: data.length,
+              offset: 80 * index,
+              index,
+            })}
             ref={list}
             onScroll={handleTouchScrollLIst}
             data={data}
@@ -160,12 +195,14 @@ const styles = StyleSheet.create({
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#dbdbdb',
+    height: 80,
   },
   behindContainer: {
     padding: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#dbdbdb',
     opacity: 0.3,
+    height: 80,
   },
   dayTitle: {
     fontSize: 20,
