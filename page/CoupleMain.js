@@ -3,23 +3,28 @@ import React, {useCallback, useEffect, useState} from 'react';
 import * as ImagePicker from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
 import {saveStorage, useGetStorage} from '../util/stroage';
-import {dateFormat} from './AniversaryList';
+import {dateFormat, getTiem, newAniversary} from './AniversaryList';
+import {useMeetDate} from '../util/hook';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
+const restDate = f => {
+  const array = newAniversary().sort((a, b) => a - b);
+  let res;
+  for (const a of array) {
+    if (!f(a)) {
+      res = a;
+      break;
+    }
+  }
+  return res;
+};
 
 const CoupleMain = () => {
   const {userData} = useSelector(state => state.user);
-  const meetTime = new Date(userData.date);
-  // ex 20.04.04 - 21.04.04
-
-  const meetYear = meetTime.getFullYear();
-  const meetMonth = meetTime.getMonth();
-  const meetDay = meetTime.getDate();
-
-  const firstTime = new Date(meetYear, meetMonth, meetDay).getTime();
-  const today = Date.now();
-  const oneDay = 86400000;
-
-  const diffDay = Math.floor((today - firstTime) / oneDay);
-
+  const [calcDay, diffDay] = useMeetDate();
+  const restNextDay = restDate(number => calcDay(number) < getTiem());
+  const rest = restNextDay - diffDay - 1;
+  const percent = 100 - rest;
   const img = useGetStorage('img');
   const [bannerImg, setBannerImg] = useState(
     img ??
@@ -54,30 +59,52 @@ const CoupleMain = () => {
 
   return (
     <>
+      <Text style={styles.imgButton} onPress={handleLoadImg}>
+        <Icon name="image" size={20} color="#fafbfc" />
+      </Text>
       <ImageBackground
         style={styles.bannerImgBox}
         imageStyle={styles.bannerImgBox}
         source={{
           url: bannerImg,
         }}>
-        <View style={styles.textContainer} onTouchEnd={handleLoadImg}>
+        <View style={styles.textContainer}>
           <Text style={styles.text}>
             {userData.me}♥{userData.you}
           </Text>
           <Text style={styles.text}>
             우리 오늘 만난지 {diffDay + 1}일 되는 날♥
           </Text>
+          <Text style={styles.betweenText}>
+            {dateFormat(new Date(userData.date))}부터 1일이에오😍
+          </Text>
         </View>
       </ImageBackground>
-      <Text style={styles.textSmall}>
-        {dateFormat(new Date(userData.date))}부터 1일이에오😍
-      </Text>
       <View style={styles.toAniversary}>
         <View style={styles.toAniversaryToDay}>
-          <Text>다음 기념일까지 ~~~ 일</Text>
+          <Text style={styles.toAniversaryToDayText}>
+            다음 기념일은 {restNextDay}일
+          </Text>
+          <View style={styles.nextAniversaryContainer}>
+            <View style={styles.nextAniversary}>
+              <View
+                style={{
+                  position: 'absolute',
+                  width: `${percent}%`,
+                  height: 2,
+                  backgroundColor: '#f8f5f1',
+                  zIndex: 2,
+                  top: 0,
+                }}
+              />
+            </View>
+          </View>
+          <Text style={styles.restDay}>{rest}일 남았어요!</Text>
         </View>
         <View>
-          <Text>이번달 14일의 데이는 ~~데이 </Text>
+          <Text style={styles.toAniversaryToDayText}>
+            이번달 14일의 데이는 ~~데이
+          </Text>
         </View>
       </View>
     </>
@@ -85,6 +112,14 @@ const CoupleMain = () => {
 };
 
 const styles = StyleSheet.create({
+  imgButton: {
+    position: 'absolute',
+    backgroundColor: '#333',
+    zIndex: 3,
+    top: 4,
+    right: 8,
+    paddingHorizontal: 2,
+  },
   bannerImgBox: {
     opacity: 0.85,
     flex: 0.7,
@@ -105,19 +140,45 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     fontSize: 20,
   },
-  textSmall: {
+  betweenText: {
+    color: '#ffffff',
     textAlign: 'center',
-    fontSize: 14,
-    backgroundColor: 'yellow',
+    fontSize: 16,
+    display: 'flex',
+    justifyContent: 'center',
+    marginTop: 30,
   },
   toAniversary: {
     flex: 0.3,
-    backgroundColor: 'red',
+    backgroundColor: '#ffc2b4',
     padding: 12,
     alignItems: 'center',
   },
   toAniversaryToDay: {
     marginBottom: 24,
+  },
+  toAniversaryToDayText: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 17,
+    marginBottom: 20,
+  },
+  nextAniversaryContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  nextAniversary: {
+    width: 200,
+    textAlign: 'center',
+    height: 2,
+    backgroundColor: '#e9896a',
+    position: 'relative',
+  },
+  restDay: {
+    textAlign: 'center',
+    color: '#ffffff',
+    marginTop: 5,
   },
 });
 

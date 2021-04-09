@@ -1,19 +1,31 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {useSelector} from 'react-redux';
+import {useMeetDate} from '../util/hook';
+
+export const getTiem = () => {
+  const curr = new Date();
+  const KR_TIME_DIFF = 9 * 60 * 60 * 1000;
+  const utc = curr.getTime() + curr.getTimezoneOffset() * 60 * 1000;
+
+  const kTime = new Date(utc + KR_TIME_DIFF);
+
+  return kTime;
+};
 
 // 100, 365일 단위로 배열에 넣기
-const newAniversary = () => {
-  let i = 0;
+export const newAniversary = () => {
+  let day = 0;
+  let year = 0;
   let res = [];
-  while (i < 5000) {
-    i += 5;
-    if (i % 100 === 0) {
-      res.push(i);
-    }
-    if (i % 365 === 0) {
-      res.push(i);
-    }
+  while (day < 3600) {
+    day += 100;
+    res.push(day);
+  }
+
+  while (year <= 3285) {
+    year += 365;
+    res.push(year);
   }
 
   return res;
@@ -42,39 +54,28 @@ const AniversaryList = () => {
   const userData = useSelector(state => state.user.userData);
   const list = useRef();
   const [data, setData] = useState();
-
-  const meetTime = new Date(userData.date);
-  // ex 20.04.04 - 21.04.04
-
-  const meetYear = meetTime.getFullYear();
-  const meetMonth = meetTime.getMonth();
-  const meetDay = meetTime.getDate();
-
-  const firstTime = new Date(meetYear, meetMonth, meetDay).getTime();
-  const today = Date.now();
-  const oneDay = 86400000;
-
-  const diffDay = Math.floor((today - firstTime) / oneDay);
-  const calcDay = days => new Date(firstTime + days * oneDay);
+  const [calcDay, diffDay] = useMeetDate();
 
   useEffect(() => {
     setData(() =>
-      newAniversary().map(number => ({
-        id: number,
-        title: number,
-        desc: dateFormat(
-          number % 365 === 0
-            ? calcDay(number).getDate() === 14
-              ? calcDay(number)
-              : new Date(
-                  calcDay(number).getFullYear(),
-                  calcDay(number).getMonth(),
-                  14,
-                )
-            : calcDay(number - 1),
-        ),
-        behind: calcDay(number) < new Date() ? true : false,
-      })),
+      newAniversary()
+        .sort((a, b) => a - b)
+        .map(number => ({
+          id: number,
+          title: number,
+          desc: dateFormat(
+            number % 365 === 0
+              ? calcDay(number).getDate() === 14
+                ? calcDay(number)
+                : new Date(
+                    calcDay(number).getFullYear(),
+                    calcDay(number).getMonth(),
+                    14,
+                  )
+              : calcDay(number - 1),
+          ),
+          behind: calcDay(number) < getTiem() ? true : false,
+        })),
     );
   }, []);
 
