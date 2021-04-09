@@ -1,4 +1,4 @@
-import {View, ImageBackground, StyleSheet, Text} from 'react-native';
+import {View, ImageBackground, StyleSheet, Text, Image} from 'react-native';
 import React, {useCallback, useEffect, useState} from 'react';
 import * as ImagePicker from 'react-native-image-picker';
 import {useSelector} from 'react-redux';
@@ -6,6 +6,7 @@ import {saveStorage, useGetStorage} from '../util/stroage';
 import {dateFormat, getTiem, newAniversary} from './AniversaryList';
 import {useMeetDate} from '../util/hook';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import {dayListData} from './DayList';
 
 const restDate = f => {
   const array = newAniversary().sort((a, b) => a - b);
@@ -19,6 +20,24 @@ const restDate = f => {
   return res;
 };
 
+const nextDayLIst = () => {
+  let res;
+  const month = new Date().getMonth() + 1;
+  for (const a of dayListData) {
+    const monthNumber = a.day.replace('월', '');
+    if (month === 4) {
+      res = '로즈데이';
+      break;
+    }
+    if (month === +monthNumber) {
+      res = a.desc;
+      break;
+    }
+  }
+
+  return res;
+};
+
 const CoupleMain = () => {
   const {userData} = useSelector(state => state.user);
   const [calcDay, diffDay] = useMeetDate();
@@ -26,6 +45,15 @@ const CoupleMain = () => {
   const rest = restNextDay - diffDay - 1;
   const percent = 100 - rest;
   const img = useGetStorage('img');
+  const me = useGetStorage('me');
+  const you = useGetStorage('you');
+
+  const [meImg, setMeImg] = useState(
+    me ?? 'https://reactnative.dev/img/tiny_logo.png',
+  );
+  const [youImg, setYouImg] = useState(
+    you ?? 'https://reactnative.dev/img/tiny_logo.png',
+  );
   const [bannerImg, setBannerImg] = useState(
     img ??
       'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
@@ -47,6 +75,38 @@ const CoupleMain = () => {
     });
   }, []);
 
+  const handleMeIcon = useCallback(() => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 200,
+      width: '100%',
+    };
+    ImagePicker.launchImageLibrary(options, res => {
+      if (res.error) {
+        return console.log('LaunchImageLibrary Error: ', res.error);
+      } else {
+        setMeImg(() => res.uri);
+      }
+    });
+  }, []);
+
+  const handleYouIcon = useCallback(() => {
+    const options = {
+      mediaType: 'photo',
+      includeBase64: false,
+      maxHeight: 200,
+      width: '100%',
+    };
+    ImagePicker.launchImageLibrary(options, res => {
+      if (res.error) {
+        return console.log('LaunchImageLibrary Error: ', res.error);
+      } else {
+        setYouImg(() => res.uri);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (img) {
       setBannerImg(() => img);
@@ -54,8 +114,28 @@ const CoupleMain = () => {
   }, [img]);
 
   useEffect(() => {
+    if (me) {
+      setMeImg(() => me);
+    }
+  }, [me]);
+
+  useEffect(() => {
+    if (you) {
+      setYouImg(() => you);
+    }
+  }, [you]);
+
+  useEffect(() => {
     saveStorage('img', bannerImg);
   }, [bannerImg]);
+
+  useEffect(() => {
+    saveStorage('me', meImg);
+  }, [meImg]);
+
+  useEffect(() => {
+    saveStorage('you', youImg);
+  }, [youImg]);
 
   return (
     <>
@@ -69,9 +149,21 @@ const CoupleMain = () => {
           url: bannerImg,
         }}>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>
-            {userData.me}♥{userData.you}
-          </Text>
+          <View style={{alignItems: 'center', marginBottom: 20}}>
+            <Text>
+              <Text onPress={handleMeIcon}>
+                <Image style={styles.meImg} source={{url: me}} />
+              </Text>
+              <View style={{padding: 6}}>
+                <Text style={{color: '#ffffff', fontSize: 20}}>
+                  {userData.me} ♥ {userData.you}
+                </Text>
+              </View>
+              <Text onPress={handleYouIcon}>
+                <Image style={styles.youImg} source={{url: you}} />
+              </Text>
+            </Text>
+          </View>
           <Text style={styles.text}>
             우리 오늘 만난지 {diffDay + 1}일 되는 날♥
           </Text>
@@ -103,7 +195,11 @@ const CoupleMain = () => {
         </View>
         <View>
           <Text style={styles.toAniversaryToDayText}>
-            이번달 14일의 데이는 ~~데이
+            {new Date().getMonth() + 1 === 4
+              ? '5월'
+              : new Date().getMonth() + 1}
+            14일에 챙길 데이는{' '}
+            <Text style={{fontSize: 22}}>{nextDayLIst()} !</Text>
           </Text>
         </View>
       </View>
@@ -133,9 +229,20 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
   },
-
+  meImg: {
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+    margin: 10,
+  },
+  youImg: {
+    width: 20,
+    height: 20,
+    borderRadius: 50,
+    margin: 10,
+  },
   text: {
-    marginTop: 8,
+    marginBottom: 18,
     textAlign: 'center',
     color: '#ffffff',
     fontSize: 20,
@@ -146,7 +253,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     display: 'flex',
     justifyContent: 'center',
-    marginTop: 30,
+    marginTop: 35,
   },
   toAniversary: {
     flex: 0.3,
@@ -162,6 +269,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 17,
+    marginTop: 14,
     marginBottom: 20,
   },
   nextAniversaryContainer: {
