@@ -49,14 +49,15 @@ const CoupleMain = () => {
   const you = useGetStorage('you');
 
   const [meImg, setMeImg] = useState(
-    me ?? 'https://reactnative.dev/img/tiny_logo.png',
+    me ? me : 'https://reactnative.dev/img/tiny_logo.png',
   );
   const [youImg, setYouImg] = useState(
-    you ?? 'https://reactnative.dev/img/tiny_logo.png',
+    you ? you : 'https://reactnative.dev/img/tiny_logo.png',
   );
   const [bannerImg, setBannerImg] = useState(
-    img ??
-      'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
+    img
+      ? img
+      : 'https://akm-img-a-in.tosshub.com/sites/dailyo/fb_feed_images/story_image/201901/couple-fb_012119080453.jpg',
   );
 
   const handleLoadImg = useCallback(() => {
@@ -152,7 +153,7 @@ const CoupleMain = () => {
           <View style={{alignItems: 'center', marginBottom: 20}}>
             <Text>
               <Text onPress={handleMeIcon}>
-                <Image style={styles.meImg} source={{url: me}} />
+                <Image style={styles.meImg} source={{url: meImg}} />
               </Text>
               <View style={{padding: 6}}>
                 <Text style={{color: '#ffffff', fontSize: 20}}>
@@ -160,7 +161,7 @@ const CoupleMain = () => {
                 </Text>
               </View>
               <Text onPress={handleYouIcon}>
-                <Image style={styles.youImg} source={{url: you}} />
+                <Image style={styles.youImg} source={{url: youImg}} />
               </Text>
             </Text>
           </View>
@@ -199,7 +200,7 @@ const CoupleMain = () => {
               ? '5월'
               : new Date().getMonth() + 1}
             14일에 챙길 데이는{' '}
-            <Text style={{fontSize: 22}}>{nextDayLIst()} !</Text>
+            <Text style={styles.nextDayText}>{nextDayLIst()} !</Text>
           </Text>
         </View>
       </View>
@@ -282,6 +283,9 @@ const styles = StyleSheet.create({
     height: 2,
     backgroundColor: '#e9896a',
     position: 'relative',
+  },
+  nextDayText: {
+    fontSize: 22,
   },
   restDay: {
     textAlign: 'center',

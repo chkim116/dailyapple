@@ -10,9 +10,7 @@
 		00E356F31AD99517003FC87E /* dailyappleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* dailyappleTests.m */; };
 		0A82E8C294BAE59A2275C135 /* libPods-dailyapple.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2C782F26D8EFC36F0F35D1C4 /* libPods-dailyapple.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
-		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		C347FB39C1D8827C6610DE86 /* libPods-dailyapple-dailyappleTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2233766360BDBF134374475B /* libPods-dailyapple-dailyappleTests.a */; };
 /* End PBXBuildFile section */
 
@@ -220,7 +218,6 @@
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
-				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				2A3648E1CA82CF44D23E0999 /* [CP] Embed Pods Frameworks */,
 				A686636D0B145E50393CBBE8 /* [CP] Copy Pods Resources */,
@@ -275,15 +272,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		13B07F8E1A680F5B00A75B9A /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
-				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

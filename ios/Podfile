@@ -12,7 +12,6 @@ target 'dailyapple' do
     :hermes_enabled => false
   )
 
-  pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
 
   target 'dailyappleTests' do
     inherit! :complete
