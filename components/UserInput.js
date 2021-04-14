@@ -11,7 +11,11 @@ import {saveUser} from '../modules/user';
 const UserInput = () => {
   const [isPicker, setIsPicker] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
-  const [coupleData, setCoupleData] = useState({me: '', you: '', date: ''});
+  const [coupleData, setCoupleData] = useState({
+    me: '',
+    you: '',
+    date: new Date(),
+  });
   const dispatch = useDispatch();
 
   const handleMeChange = useCallback(value => {
@@ -27,16 +31,23 @@ const UserInput = () => {
   }, []);
 
   const handleNextStatePicker = useCallback(() => {
-    setIsPicker(() => true);
-  }, []);
+    if (coupleData.me && coupleData.you) {
+      setIsPicker(() => true);
+      return;
+    }
+
+    console.log('다입력해야죠.');
+  }, [coupleData]);
 
   const handlePrevStageUser = useCallback(() => {
     setIsPicker(() => false);
   }, []);
 
   const handleConfirm = useCallback(() => {
-    setIsFinish(() => true);
-  }, []);
+    if (coupleData.date) {
+      setIsFinish(() => true);
+    }
+  }, [coupleData]);
 
   const handleFinish = useCallback(() => {
     const year = coupleData.date.getFullYear();
@@ -87,7 +98,12 @@ const UserInput = () => {
         </View>
       ) : (
         <>
-          <DatePicker mode="date" locale="ko" onDateChange={handleDateChange} />
+          <DatePicker
+            mode="date"
+            locale="ko"
+            date={new Date()}
+            onDateChange={handleDateChange}
+          />
           <View style={styles.buttonContainer}>
             <Button onPress={handlePrevStageUser}>이전</Button>
             <Button onPress={handleFinish}>완료</Button>

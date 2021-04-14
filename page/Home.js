@@ -5,10 +5,14 @@ import DayList from './DayList';
 import Icon from 'react-native-vector-icons/AntDesign';
 import IconFont from 'react-native-vector-icons/FontAwesome';
 import CoupleMain from './CoupleMain';
+import {useSelector} from 'react-redux';
 
 const Tabs = createBottomTabNavigator();
 
 const Home = () => {
+  const {isLogin} = useSelector(state => state.user);
+
+  if (!isLogin) return;
   return (
     <Tabs.Navigator>
       <Tabs.Screen

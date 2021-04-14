@@ -49,10 +49,14 @@ const CoupleMain = () => {
   const you = useGetStorage('you');
 
   const [meImg, setMeImg] = useState(
-    me ? me : 'https://reactnative.dev/img/tiny_logo.png',
+    me
+      ? me
+      : 'https://png.pngtree.com/png-clipart/20190115/ourmid/pngtree-red-heart-png-image_319448.jpg',
   );
   const [youImg, setYouImg] = useState(
-    you ? you : 'https://reactnative.dev/img/tiny_logo.png',
+    you
+      ? you
+      : 'https://png.pngtree.com/png-clipart/20190115/ourmid/pngtree-red-heart-png-image_319448.jpg',
   );
   const [bannerImg, setBannerImg] = useState(
     img
