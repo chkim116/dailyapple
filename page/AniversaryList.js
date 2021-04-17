@@ -36,8 +36,10 @@ export const dateFormat = date => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
+  const week = date.getDay();
+  const weekName = ['일', '월', '화', '수', '목', '금', '토'];
 
-  return `${year}년 ${month}월 ${day}일`;
+  return `${year}년 ${month}월 ${day}일 (${weekName[week]})`;
 };
 
 //  기념일대로 싸라라~~
@@ -77,6 +79,7 @@ const AniversaryList = () => {
           behind: calcDay(number) < getTiem() ? true : false,
         })),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -84,8 +87,8 @@ const AniversaryList = () => {
       {data && (
         <FlatList
           initialScrollIndex={Math.ceil(diffDay / 100)}
-          getItemLayout={(data, index) => ({
-            length: data.length,
+          getItemLayout={(item, index) => ({
+            length: item.length,
             offset: index === 1 ? 1 : 80 * index,
             index,
           })}
