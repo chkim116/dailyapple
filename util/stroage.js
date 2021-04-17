@@ -23,7 +23,7 @@ export const useAuth = () => {
     getStorage();
   }, []);
 
-  return user;
+  return user ? user : null;
 };
 
 export const useGetStorage = key => {

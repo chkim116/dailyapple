@@ -11,6 +11,7 @@ import {saveUser} from '../modules/user';
 const UserInput = () => {
   const [isPicker, setIsPicker] = useState(false);
   const [isFinish, setIsFinish] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [coupleData, setCoupleData] = useState({
     me: '',
     you: '',
@@ -27,6 +28,7 @@ const UserInput = () => {
   }, []);
 
   const handleDateChange = useCallback(date => {
+    setSelectedDate(date);
     setCoupleData(prev => ({...prev, date}));
   }, []);
 
@@ -101,7 +103,7 @@ const UserInput = () => {
           <DatePicker
             mode="date"
             locale="ko"
-            date={new Date()}
+            date={selectedDate}
             onDateChange={handleDateChange}
           />
           <View style={styles.buttonContainer}>

@@ -11,7 +11,6 @@ const Tabs = createBottomTabNavigator();
 
 const Home = () => {
   const {isLogin} = useSelector(state => state.user);
-
   if (!isLogin) return;
   return (
     <Tabs.Navigator>

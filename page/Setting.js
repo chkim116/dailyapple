@@ -9,8 +9,11 @@ const Setting = () => {
   const dispatch = useDispatch();
 
   const handleRemoveUser = useCallback(() => {
-    removeStorage('couple');
     dispatch(resetUser());
+    removeStorage('couple');
+    removeStorage('me');
+    removeStorage('you');
+    removeStorage('img');
   }, [dispatch]);
 
   return (
