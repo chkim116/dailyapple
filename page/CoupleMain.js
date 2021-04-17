@@ -39,7 +39,8 @@ const nextDayLIst = () => {
 };
 
 const CoupleMain = () => {
-  const {userData} = useSelector(state => state.user);
+  const {userData, isLogin} = useSelector(state => state.user);
+
   const [calcDay, diffDay] = useMeetDate();
   const restNextDay = restDate(number => calcDay(number) < getTiem());
   const rest = restNextDay - diffDay - 1;
@@ -142,6 +143,10 @@ const CoupleMain = () => {
     saveStorage('you', youImg);
   }, [youImg]);
 
+  if (!isLogin) {
+    return null;
+  }
+
   return (
     <>
       <Text style={styles.imgButton} onPress={handleLoadImg}>
@@ -180,7 +185,10 @@ const CoupleMain = () => {
       <View style={styles.toAniversary}>
         <View style={styles.toAniversaryToDay}>
           <Text style={styles.toAniversaryToDayText}>
-            다음 기념일은 {restNextDay}일
+            다음 기념일은{' '}
+            {restNextDay % 365 === 0
+              ? `${restNextDay / 365}주년`
+              : `${restNextDay}일`}
           </Text>
           <View style={styles.nextAniversaryContainer}>
             <View style={styles.nextAniversary}>
@@ -196,13 +204,22 @@ const CoupleMain = () => {
               />
             </View>
           </View>
-          <Text style={styles.restDay}>{rest}일 남았어요!</Text>
+          <Text style={styles.restDay}>
+            <>
+              {rest === 0
+                ? restNextDay % 365 === 0
+                  ? `${restNextDay / 365}주년 축하드려요`
+                  : `${restNextDay}일 축하드려요`
+                : `${dateFormat(
+                    calcDay(restNextDay),
+                  )} 까지 ${rest}일 남았어요!`}
+            </>
+          </Text>
         </View>
+
         <View>
           <Text style={styles.toAniversaryToDayText}>
-            {new Date().getMonth() + 1 === 4
-              ? '5월'
-              : new Date().getMonth() + 1}
+            {new Date().getMonth() + 1 === 4 ? 5 : new Date().getMonth() + 1}월
             14일에 챙길 데이는{' '}
             <Text style={styles.nextDayText}>{nextDayLIst()} !</Text>
           </Text>

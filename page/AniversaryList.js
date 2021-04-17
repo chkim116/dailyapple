@@ -54,7 +54,7 @@ const AniversaryList = () => {
   const userData = useSelector(state => state.user.userData);
   const list = useRef();
   const [data, setData] = useState();
-  const [calcDay, diffDay] = useMeetDate();
+  const [calcDay, diffDay, meetTime] = useMeetDate();
 
   useEffect(() => {
     setData(() =>
@@ -65,12 +65,12 @@ const AniversaryList = () => {
           title: number,
           desc: dateFormat(
             number % 365 === 0
-              ? calcDay(number).getDate() === 14
+              ? calcDay(number).getDate() === meetTime.getDate()
                 ? calcDay(number)
                 : new Date(
                     calcDay(number).getFullYear(),
                     calcDay(number).getMonth(),
-                    14,
+                    meetTime.getDate(),
                   )
               : calcDay(number - 1),
           ),

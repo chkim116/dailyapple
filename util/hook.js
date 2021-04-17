@@ -15,8 +15,8 @@ export const useMeetDate = () => {
   const today = Date.now();
   const oneDay = 86400000;
 
-  const diffDay = Math.floor((today - firstTime) / oneDay);
-  const calcDay = days => new Date(firstTime + days * oneDay);
+  const diffDay = Math.floor((today - firstTime) / oneDay); // 현재까지 만난 날짜.
+  const calcDay = days => new Date(firstTime + days * oneDay); // 100일을 넣으면 만난 날짜에서 100일 후 날짜를 출력
 
-  return [calcDay, diffDay];
+  return [calcDay, diffDay, meetTime];
 };
