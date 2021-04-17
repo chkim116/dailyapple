@@ -86,7 +86,7 @@ const AniversaryList = () => {
           initialScrollIndex={Math.ceil(diffDay / 100)}
           getItemLayout={(data, index) => ({
             length: data.length,
-            offset: 80 * index,
+            offset: index === 1 ? 1 : 80 * index,
             index,
           })}
           ref={list}
