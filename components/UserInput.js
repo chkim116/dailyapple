@@ -38,7 +38,7 @@ const UserInput = () => {
       return;
     }
 
-    console.log('다입력해야죠.');
+    Alert.alert('다 입력해 주세요!');
   }, [coupleData]);
 
   const handlePrevStageUser = useCallback(() => {
@@ -77,9 +77,6 @@ const UserInput = () => {
   return (
     <>
       <Icon name="heart" size={30} color="red" style={styles.heartIcon} />
-      <Text style={styles.title}>
-        Daily Apple <FontIcon name="apple" size={24} color="#d05148" />
-      </Text>
       {!isPicker ? (
         <View style={styles.main}>
           <TextInput
@@ -117,11 +114,6 @@ const UserInput = () => {
 };
 
 const styles = StyleSheet.create({
-  title: {
-    fontSize: 20,
-    position: 'absolute',
-    top: 30,
-  },
   heartIcon: {
     marginBottom: 36,
   },

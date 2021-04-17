@@ -239,6 +239,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   bannerImgBox: {
+    backgroundColor: '#b0b0b0',
     opacity: 0.85,
     flex: 0.7,
     flexDirection: 'column',
@@ -256,12 +257,20 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 50,
     margin: 10,
+    borderColor: '#dbdbdb',
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    zIndex: 55,
   },
   youImg: {
     width: 20,
     height: 20,
     borderRadius: 50,
     margin: 10,
+    zIndex: 55,
+    borderColor: '#dbdbdb',
+    borderWidth: 1,
+    backgroundColor: '#ffffff',
   },
   text: {
     marginBottom: 18,
